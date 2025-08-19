@@ -1,4 +1,4 @@
-# Filecoin SRS Extractor
+# GNARK PLONK SRS Extractor (BLS12-381)
 
 Extract gnark PLONK-compatible SRS from Filecoin's trusted setup Phase 1.
 
