@@ -18,7 +18,13 @@ This tool extracts Structured Reference Strings (SRS) from Filecoin's BLS12-381 
 
 ## Usage
 
+### Pre-generated SRS Files
+
+Pre-generated SRS files are available for download. See [SRS.md](SRS.md) for a complete list with download links for both Canonical and Lagrange formats (powers 0-27).
+
 ### Generate SRS Files
+
+If you prefer to generate the files yourself:
 
 ```bash
 go run srs_from_challenge.go
