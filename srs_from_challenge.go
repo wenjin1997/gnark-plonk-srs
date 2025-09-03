@@ -15,8 +15,8 @@ func main() {
 
 	challenge.Seek(64, io.SeekStart) // Skip hash
 
-	// Read the maximum number of G1 points we need (2^27 + 3)
-	N := 27
+	// Read the maximum number of G1 points we need (2^24 + 3)
+	N := 24
 	maxSize := (1 << N) + 3
 
 	// Store all G1 points in memory
@@ -73,8 +73,8 @@ func main() {
 		sizeCanonical := sizeLagrange + 3
 
 		// Generate canonical form SRS
-		outputPath := fmt.Sprintf("srs_%d.srs", n)
-		fmt.Printf("Generating %s         (2^%d+3 = %d points)...", outputPath, n, sizeCanonical)
+		outPath := fmt.Sprintf("srs_%d.srs.pk", n)
+		fmt.Printf("Generating %s         (2^%d+3 = %d points)...", outPath, n, sizeCanonical)
 
 		var srs kzg.SRS
 		srs.Pk.G1 = g1[:sizeCanonical]
@@ -82,14 +82,24 @@ func main() {
 		srs.Vk.G2 = g2
 		srs.Vk.Lines = lines
 
-		out, _ := os.Create(outputPath)
-		srs.WriteTo(out)
+		// generate proving key
+		out, _ := os.Create(outPath)
+		srs.Pk.WriteTo(out)
 		out.Close()
-		fileInfo, _ := os.Stat(outputPath)
+		fileInfo, _ := os.Stat(outPath)
+		fmt.Printf(" ✓ (%.2f MB)\n", float64(fileInfo.Size())/(1024*1024))
+
+		// generate verifying key
+		outvkPath := fmt.Sprintf("srs_%d.srs.vk", n)
+		fmt.Printf("Generating %s         (2^%d+3 = %d points)...", outvkPath, n, sizeCanonical)
+		out, _ = os.Create(outvkPath)
+		srs.Vk.WriteTo(out)
+		out.Close()
+		fileInfo, _ = os.Stat(outvkPath)
 		fmt.Printf(" ✓ (%.2f MB)\n", float64(fileInfo.Size())/(1024*1024))
 
 		// Generate Lagrange form SRS
-		outputPath = fmt.Sprintf("srsLagrange_%d.srs", n)
+		outputPath := fmt.Sprintf("srsLagrange_%d.srs", n)
 		fmt.Printf("Generating %s (2^%d   = %d points)...", outputPath, n, sizeLagrange)
 
 		var srsLagrange kzg.SRS
